@@ -1,0 +1,154 @@
+1. Add New Order: 
+CREATE PROC AddNewOrder
+    @CustomerId INT,            
+    @MenuItemId INT,            
+    @Quantity INT,             
+    @TotalAmount FLOAT OUTPUT   
+AS
+BEGIN
+    DECLARE @OrderId INT;
+    DECLARE @ItemPrice FLOAT;
+
+    
+    INSERT INTO Orders (CustomerId, [Order Date], TotalAmount, CreationDate)
+    OUTPUT INSERTED.ID INTO @OrderId  
+    VALUES (@CustomerId, GETDATE(), 0, GETDATE()); 
+
+    
+    SELECT @ItemPrice = Price
+    FROM MenuItems
+    WHERE ID = @MenuItemId;
+
+   
+    SET @TotalAmount = @ItemPrice * @Quantity;
+    INSERT INTO OrderMenuItems (OrderId, MenuItemId, Quantity)
+    VALUES (@OrderId, @MenuItemId, @Quantity);
+
+  
+    UPDATE Orders
+    SET Orders.[Total Amount] = @TotalAmount
+    WHERE ID = @OrderId;
+
+   
+    SELECT @TotalAmount AS TotalAmount;
+END
+2. Manage Reservations: 
+CREATE PROC ManageReservation
+    @Customer_Name VARCHAR(100),
+    @NumberOfGuests INT,
+    @ReservationDate DATETIME,
+    @TableNumber INT,
+    @TableCapacity INT,
+    @ID INT,
+    @CreationDate DATETIME,
+    @CreationBy VARCHAR(50),
+    @UpdateDate DATETIME,
+    @UpdateBy VARCHAR(50),
+    @IsActive BIT
+AS
+BEGIN 
+    IF EXISTS (
+        SELECT 1
+        FROM Reservations
+        WHERE [Table Number] = @TableNumber
+        AND [Reservation Date] = @ReservationDate
+        AND IsActive = 1
+    )
+    BEGIN
+        PRINT 'Table is already booked for this date and time.'
+        RETURN;
+    END
+
+   
+    IF EXISTS (SELECT 1 FROM Reservations WHERE ID = @ID AND IsActive = 1)
+    BEGIN
+        UPDATE Reservations
+        SET 
+            Customer_Name = @Customer_Name,
+            [ Number of Guests] = @NumberOfGuests,
+            [Reservation Date] = @ReservationDate,
+            [Table Number] = @TableNumber,
+            [Table Capacity] = @TableCapacity,
+            UpdateDate = @UpdateDate,
+            UpdateBy = @UpdateBy,
+            IsActive = @IsActive
+        WHERE ID = @ID;
+    END
+    ELSE
+    BEGIN
+     
+        INSERT INTO Reservations (
+            Customer_Name,
+            [ Number of Guests],
+            [Reservation Date],
+            [Table Number],
+            [Table Capacity],
+            CreationDate,
+            CreationBy,
+            UpdateDate,
+            UpdateBy,
+            IsActive
+        )
+        VALUES (
+            @Customer_Name,
+            @NumberOfGuests,
+            @ReservationDate,
+            @TableNumber,
+            @TableCapacity,
+            @CreationDate,
+            @CreationBy,
+            @UpdateDate,
+            @UpdateBy,
+            @IsActive
+        );
+    END
+END;
+3. Generate Staff Report: 
+create proc GenerateStaffReport(
+@staff_performance float,
+@StaffId int,
+@Attendance bit
+)
+as 
+begin 
+select Re.staff_performance,Re.StaffId,st.Attendance from Reports as Re inner join Staffs as st on re.StaffId=st.User_id
+where
+    Re.staff_performance = @staff_performance
+        AND Re.StaffId = @StaffId
+        AND st.Attendance = @Attendance;
+end
+4. Update Menu Availability: 
+
+Create proc MenuAvailablility(
+@Category_Id int,
+@Name varchar(100),
+@Price  float,
+@IsAvailable bit ,
+@Discount float, 
+@Image varbinary(max),
+@Bio varchar(200),
+@ID INT, 
+@CreationDate datetime,
+@CreationBy varchar(max),
+@UpdateDate datetime,
+@UpdateBy varchar(max),
+@IsActive bit 
+)
+As 
+begin
+Update MenuItems set 
+Category_Id=@Category_Id,
+[Name]=@Name,
+Price=@Price,
+IsAvailable=@IsAvailable ,
+Discount=@Discount, 
+[Image]=@Image,
+Bio=@Bio,
+CreationDate=@CreationDate,
+CreationBy=@CreationBy,
+UpdateDate=@UpdateDate,
+UpdateBy=@UpdateBy,
+IsActive =@IsActive 
+where ID=@ID
+end 
+

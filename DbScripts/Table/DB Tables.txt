@@ -1,0 +1,194 @@
+CREATE TABLE Users (
+Id INT PRIMARY KEY Identity,
+[Password] VARCHAR(20),
+Email VARCHAR(20),
+CHECK (Email LIKE '%_@__%.%')
+,
+CreationDate Datetime,
+CreationBy Varchar(30),
+UpdateDate DateTime,
+UpdateBy Varchar(30),
+IsActive bit default 0
+)
+CREATE TABLE Admins (
+  [Full Name] VARCHAR(100),
+  [User_id] INT,
+  FOREIGN KEY ([User_id]) REFERENCES Users(Id),
+  CreationDate DATETIME,
+  CreationBy VARCHAR(30),
+  UpdateDate DATETIME,
+  UpdateBy VARCHAR(30),
+  IsActive BIT DEFAULT 0,
+  PRIMARY KEY ([User_id])
+);
+CREATE TABLE Customers (
+  [Full Name] VARCHAR(100),
+  [Phone Number] VARCHAR(10),
+  CHECK ([Phone Number] LIKE '07________'),
+  [User_id] INT,
+  [Address] VARCHAR(100),
+  FOREIGN KEY ([User_id]) REFERENCES Users(Id),
+  CreationBy VARCHAR(30),
+  UpdateDate DATETIME,
+  UpdateBy VARCHAR(30),
+  IsActive BIT DEFAULT 0,
+  PRIMARY KEY ([User_id])
+);
+
+CREATE TABLE Staffs (
+  [Full Name] VARCHAR(100),
+  [Role] VARCHAR(15),
+  Shifts_Timing TIME,
+  Attendance BIT DEFAULT 0,
+  Employment_date DATETIME,
+  Employment_type VARCHAR(30),
+  [Phone Number] VARCHAR(10),
+  CHECK ([Phone Number] LIKE '07________'),
+  [User_id] INT,
+  FOREIGN KEY ([User_id]) REFERENCES Admins([User_id]),
+  CreationDate DATETIME,
+  CreationBy VARCHAR(30),
+  UpdateDate DATETIME,
+  UpdateBy VARCHAR(30),
+  IsActive BIT DEFAULT 0,
+  PRIMARY KEY ([User_id])
+);
+
+ 
+CREATE TABLE Orders (
+  [Table Number] INT,
+  [Customer Name] VARCHAR(30),
+  [Order Date] DATETIME,
+  [Total Amount] FLOAT,
+  CHECK ([Total Amount] > 0),
+  [Serial Number] FLOAT,
+  [Quantity] INT,
+  [CustomerId] INT,
+  [OrderId] INT
+  ,
+  FOREIGN KEY ([CustomerId]) REFERENCES Customers([User_id]),
+  ID INT PRIMARY KEY IDENTITY,
+  CreationDate DATETIME,
+  CreationBy VARCHAR(30),
+  UpdateDate DATETIME,
+  UpdateBy VARCHAR(30),
+  IsActive BIT DEFAULT 0
+);
+
+	
+ALTER TABLE Statuses
+ADD CONSTRAINT UQ_OrderId UNIQUE (OrderId);
+ALTER TABLE Orders
+ADD CONSTRAINT FK_Orders_Statuses
+FOREIGN KEY ([OrderId]) 
+REFERENCES Statuses([OrderId]);
+CREATE TABLE MenuItems (
+  Category_Id INT,
+  CHECK (Category_Id > 0),
+  [Name] VARCHAR(30),
+  Price FLOAT,
+  IsAvailable BIT DEFAULT 0,
+  Discount FLOAT,
+  [Image] VARBINARY(MAX),
+  Bio VARCHAR(200),
+  ID INT PRIMARY KEY IDENTITY,
+  CreationDate DATETIME,
+  CreationBy VARCHAR(30),
+  UpdateDate DATETIME,
+  UpdateBy VARCHAR(30),
+  IsActive BIT DEFAULT 0,
+  FOREIGN KEY (Category_Id) REFERENCES Category(CategoryId)
+);
+
+
+Create Table Reports(
+Discounts float,
+staff_performance float,
+Foreign key (ID)references Admins([User_id]),
+Foreign key (ReservationId)references Reservations(ID),
+Reservation varchar(40) ,
+ReportDate DateTime ,
+StaffId int Not Null ,
+Check (StaffId>0)
+,
+ReservationId int,
+ID INT PRIMARY KEY Identity,
+CreationDate Datetime,
+CreationBy Varchar(30),
+UpdateDate DateTime ,
+UpdateBy Varchar(30),
+IsActive bit default 0
+)
+Create Table Reservations(
+Customer_Name Varchar(100),[ Number of Guests] int,
+[Reservation Date] DateTime,
+[Table Number] int, 
+[Table Capacity] int,
+Check([Table Capacity]<=[ Number of Guests] ),
+Foreign key (ID)references Customers([User_id]),
+ID INT PRIMARY KEY Identity,
+CreationDate Datetime,
+CreationBy Varchar(30),
+UpdateDate DateTime ,
+UpdateBy Varchar(30),
+IsActive bit default 0
+)
+
+CREATE TABLE Rates (
+  [Description] VARCHAR(200),
+  [Rate amount] FLOAT,
+  CHECK ([Rate amount] <= 5),
+  OrderID INT,
+  CustomerID INT,
+  ReservationID INT,
+  [Customer Name] VARCHAR(100),
+  RateDate DATETIME,
+  FOREIGN KEY (OrderID) REFERENCES Orders(ID),
+  FOREIGN KEY (CustomerID) REFERENCES Customers([User_id]),
+  FOREIGN KEY (ReservationID) REFERENCES Reservations(ID),
+  ID INT PRIMARY KEY IDENTITY,
+  CreationDate DATETIME,
+  CreationBy VARCHAR(30),
+  UpdateDate DATETIME,
+  UpdateBy VARCHAR(30),
+  IsActive BIT DEFAULT 0
+);
+
+
+CREATE TABLE Statuses (
+  Pending BIT DEFAULT 0,
+  CHECK (Pending = 0 OR Pending = 1),
+  Completed BIT DEFAULT 0,
+  CHECK (Completed = 0 OR Completed = 1),
+  [OrderId] INT,
+  FOREIGN KEY ([OrderId]) REFERENCES Orders(ID),
+  FOREIGN KEY ([OrderId]) REFERENCES Reservations(ID),
+  ID INT PRIMARY KEY IDENTITY,
+  CreationDate DATETIME,
+  CreationBy VARCHAR(30),
+  UpdateDate DATETIME,
+  UpdateBy VARCHAR(30),
+  IsActive BIT DEFAULT 0
+);
+CREATE TABLE Category (
+    CategoryId INT PRIMARY KEY,
+    CategoryName VARCHAR(100) NOT NULL, 
+    CreationDate DATETIME, 
+	CreationBy Varchar(30)
+     ,
+     UpdateDate DateTime ,
+     UpdateBy Varchar(30),
+     IsActive bit default 0)
+	 ALTER TABLE Category
+ADD CONSTRAINT FK_Category_MenuItems
+FOREIGN KEY (CategoryId) 
+REFERENCES MenuItems(Category_Id);
+ALTER TABLE MenuItems
+ADD CONSTRAINT UQ_Category_Id UNIQUE (Category_Id);
+CREATE TABLE OrderMenuItems (
+    OrderId INT,       
+    MenuItemId INT,                      
+    PRIMARY KEY (OrderId, MenuItemId),  
+    FOREIGN KEY (OrderId) REFERENCES Orders(ID),  
+    FOREIGN KEY (MenuItemId) REFERENCES MenuItems(ID) 
+);

@@ -1,0 +1,45 @@
+Database Queries 
+1. Retrieve Menu by Category: 
+select [Name],Price,IsAvailable from MenuItems as mn inner join Category as ca
+on mn.Category_Id =ca.CategoryId WHERE ca.CategoryName = 'Appetizer';
+2. Daily Sales Report:
+	SELECT 
+    ca.CategoryName, 
+    mi.[Name] AS MenuItemName, 
+    SUM(o.Quantity * mi.Price) AS TotalSales
+FROM 
+    Orders o
+INNER JOIN 
+    OrderMenuItems as omi ON o.ID = omi.OrderId
+INNER JOIN 
+    MenuItems as mi ON omi.MenuItemId = mi.ID
+INNER JOIN 
+    Category ca ON mi.Category_Id = ca.CategoryId
+WHERE 
+    o.[Order Date] = '2025-03-02'
+GROUP BY 
+    ca.CategoryName, mi.[Name]
+ORDER BY 
+    ca.CategoryName, TotalSales DESC;
+
+3. Reservation Schedule: 
+SELECT 
+    r.ID AS ReservationID,
+    r.Customer_Name,
+    r.[Reservation Date],
+    r.[Table Number],
+    r.[Number of Guests],
+    r.[Table Capacity],
+    c.[Full Name] AS CustomerFullName,
+    c.[Phone Number] AS CustomerPhoneNumber,
+    c.Address AS CustomerAddress,
+    c.User_id AS CustomerUserID
+FROM Reservations AS r
+INNER JOIN Customers AS c ON r.ID = c.User_id
+WHERE r.[Reservation Date] = CAST(GETDATE() AS DATE);
+
+4. Staff Attendance: 
+select st.[Full Name],st.Attendance from Staffs as st
+WHERE 
+    st.Employment_date BETWEEN 
+	'2025-01-01' AND '2025-02-28';  

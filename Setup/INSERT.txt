@@ -1,0 +1,66 @@
+INSERT INTO Users ([Password], Email, CreationDate, CreationBy, UpdateDate, UpdateBy, IsActive)
+VALUES ('password123', 'user1@example.com', GETDATE(), 'admin', GETDATE(), 'admin', 1);
+
+INSERT INTO Users ([Password], Email, CreationDate, CreationBy, UpdateDate, UpdateBy, IsActive)
+VALUES ('password456', 'user2@example.com', GETDATE(), 'admin', GETDATE(), 'admin', 1);
+-- Adding Admins
+INSERT INTO Admins ([Full Name], [User_id], CreationDate, CreationBy, UpdateDate, UpdateBy, IsActive)
+VALUES ('Admin User 1', 1, GETDATE(), 'admin', GETDATE(), 'admin', 1);
+
+INSERT INTO Admins ([Full Name], [User_id], CreationDate, CreationBy, UpdateDate, UpdateBy, IsActive)
+VALUES ('Admin User 2', 2, GETDATE(), 'admin', GETDATE(), 'admin', 1);
+
+-- Adding Customers
+INSERT INTO Customers ([Full Name], [Phone Number], [User_id], [Address], CreationBy, UpdateDate, UpdateBy, IsActive)
+VALUES ('Customer 1', '0712345678', 1, 'Address 1', 'admin', GETDATE(), 'admin', 1);
+
+INSERT INTO Customers ([Full Name], [Phone Number], [User_id], [Address], CreationBy, UpdateDate, UpdateBy, IsActive)
+VALUES ('Customer 2', '0789876543', 2, 'Address 2', 'admin', GETDATE(), 'admin', 1);
+-- Adding Staff
+INSERT INTO Staffs ([Full Name], [Role], Shifts_Timing, Attendance, Employment_date, Employment_type, [Phone Number], [User_id], CreationDate, CreationBy, UpdateDate, UpdateBy, IsActive)
+VALUES ('Staff 1', 'Waiter', '09:00', 1, GETDATE(), 'Full-time', '0712345678', 1, GETDATE(), 'admin', GETDATE(), 'admin', 1);
+
+INSERT INTO Staffs ([Full Name], [Role], Shifts_Timing, Attendance, Employment_date, Employment_type, [Phone Number], [User_id], CreationDate, CreationBy, UpdateDate, UpdateBy, IsActive)
+VALUES ('Staff 2', 'Cook', '11:00', 1, GETDATE(), 'Part-time', '0789876543', 2, GETDATE(), 'admin', GETDATE(), 'admin', 1);
+-- Adding Category
+INSERT INTO Category (CategoryId, CategoryName, CreationDate, CreationBy, UpdateDate, UpdateBy, IsActive)
+VALUES (1, 'Appetizer', GETDATE(), 'admin', GETDATE(), 'admin', 1);
+
+INSERT INTO Category (CategoryId, CategoryName, CreationDate, CreationBy, UpdateDate, UpdateBy, IsActive)
+VALUES (2, 'Main Course', GETDATE(), 'admin', GETDATE(), 'admin', 1);
+-- Adding Menu Items
+INSERT INTO MenuItems (Category_Id, [Name], Price, IsAvailable, Discount, [Image], Bio, CreationDate, CreationBy, UpdateDate, UpdateBy, IsActive)
+VALUES (1, 'Spring Rolls', 5.99, 1, 0, NULL, 'Delicious crispy spring rolls.', GETDATE(), 'admin', GETDATE(), 'admin', 1);
+
+INSERT INTO MenuItems (Category_Id, [Name], Price, IsAvailable, Discount, [Image], Bio, CreationDate, CreationBy, UpdateDate, UpdateBy, IsActive)
+VALUES (2, 'Grilled Chicken', 12.99, 1, 0, NULL, 'Tender grilled chicken.', GETDATE(), 'admin', GETDATE(), 'admin', 1);
+-- Adding Orders
+INSERT INTO Orders ([Table Number], [Customer Name], [Order Date], [Total Amount], [Serial Number], [Quantity], [CustomerId], [OrderId], CreationDate, CreationBy, UpdateDate, UpdateBy, IsActive)
+VALUES (1, 'Customer 1', GETDATE(), 25.98, 12345, 2, 1, 1, GETDATE(), 'admin', GETDATE(), 'admin', 1);
+
+INSERT INTO Orders ([Table Number], [Customer Name], [Order Date], [Total Amount], [Serial Number], [Quantity], [CustomerId], [OrderId], CreationDate, CreationBy, UpdateDate, UpdateBy, IsActive)
+VALUES (2, 'Customer 2', GETDATE(), 18.99, 12346, 1, 2, 2, GETDATE(), 'admin', GETDATE(), 'admin', 1);
+-- Adding Reservations
+INSERT INTO Reservations (Customer_Name, [Number of Guests], [Reservation Date], [Table Number], [Table Capacity], [User_id], CreationDate, CreationBy, UpdateDate, UpdateBy, IsActive)
+VALUES ('Customer 1', 4, GETDATE(), 1, 4, 1, GETDATE(), 'admin', GETDATE(), 'admin', 1);
+
+INSERT INTO Reservations (Customer_Name, [Number of Guests], [Reservation Date], [Table Number], [Table Capacity], [User_id], CreationDate, CreationBy, UpdateDate, UpdateBy, IsActive)
+VALUES ('Customer 2', 3, GETDATE(), 2, 4, 2, GETDATE(), 'admin', GETDATE(), 'admin', 1);
+-- Adding Statuses
+INSERT INTO Statuses (Pending, Completed, [OrderId], CreationDate, CreationBy, UpdateDate, UpdateBy, IsActive)
+VALUES (1, 0, 1, GETDATE(), 'admin', GETDATE(), 'admin', 1);
+
+INSERT INTO Statuses (Pending, Completed, [OrderId], CreationDate, CreationBy, UpdateDate, UpdateBy, IsActive)
+VALUES (0, 1, 2, GETDATE(), 'admin', GETDATE(), 'admin', 1);
+-- Adding Reports
+INSERT INTO Reports (Discounts, staff_performance, [ID], ReservationId, Reservation, ReportDate, StaffId, ReservationId, CreationDate, CreationBy, UpdateDate, UpdateBy, IsActive)
+VALUES (10.5, 8.5, 1, 1, 'Reserved Table', GETDATE(), 1, 1, GETDATE(), 'admin', GETDATE(), 'admin', 1);
+
+INSERT INTO Reports (Discounts, staff_performance, [ID], ReservationId, Reservation, ReportDate, StaffId, ReservationId, CreationDate, CreationBy, UpdateDate, UpdateBy, IsActive)
+VALUES (5.0, 7.8, 2, 2, 'Reserved Table', GETDATE(), 2, 2, GETDATE(), 'admin', GETDATE(), 'admin', 1);
+-- Adding Rates
+INSERT INTO Rates ([Description], [Rate amount], OrderID, CustomerID, ReservationID, [Customer Name], RateDate, CreationDate, CreationBy, UpdateDate, UpdateBy, IsActive)
+VALUES ('Good service', 4.5, 1, 1, 1, 'Customer 1', GETDATE(), GETDATE(), 'admin', GETDATE(), 'admin', 1);
+
+INSERT INTO Rates ([Description], [Rate amount], OrderID, CustomerID, ReservationID, [Customer Name], RateDate, CreationDate, CreationBy, UpdateDate, UpdateBy, IsActive)
+VALUES ('Average service', 3.0, 2, 2, 2, 'Customer 2', GETDATE(), GETDATE(), 'admin', GETDATE(), 'admin', 1);

@@ -1,0 +1,32 @@
+Views:
+1. Available Menu Items View: 
+Create view MenuIItemView
+as
+select mi.Name,mi.IsAvailable,mi.Price,ca.CategoryName  from MenuItems as mi inner join Category as ca 
+on mi.Category_Id=ca.CategoryId
+
+2.Daily Reservations View: 
+Create view ReservationView
+as
+select res.[Table Number],cu.[Phone Number] from Reservations as res inner join Customers as cu
+on res.ID=cu.User_id
+where 
+  CAST(res.[Reservation Date] AS DATE) = CAST(GETDATE() AS DATE);
+3. Sales Summary View: 
+ CREATE VIEW SalesSummaryView AS
+SELECT 
+    ca.CategoryName,
+    mi.Name AS MenuItemName,
+    SUM(o.Quantity) AS TotalQuantitySold,
+    SUM(o.Quantity * mi.Price) AS TotalRevenue
+FROM 
+    Orders AS o
+INNER JOIN 
+    OrderMenuItems AS omi ON o.ID = omi.OrderId
+INNER JOIN 
+    MenuItems AS mi ON omi.MenuItemId = mi.ID
+INNER JOIN 
+    Category AS ca ON mi.Category_Id = ca.CategoryId
+GROUP BY 
+    ca.CategoryName, 
+    mi.Name;
